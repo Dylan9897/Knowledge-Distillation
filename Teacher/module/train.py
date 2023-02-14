@@ -92,7 +92,7 @@ def train(model,train_data_loader,valid_data_loader,test_data_loader,config):
         if val_acc > best_accuracy:
             torch.save(model.state_dict(), os.path.join(config.MODEL_DIR,'best_model_state.ckpt'))
             best_accuracy = val_acc
-    test_acc, _ = eval_model(model,test_data_loader,loss_fn,device,config.test_examples)
+    test_acc, _ = eval_model(model,test_data_loader,loss_fn,config.device,config.test_examples)
     print(f"test result is {test_acc.item()}")
     y_texts, y_pred, y_pred_probs, y_test = get_predictions(model,test_data_loader)
     class_names = ['教育', '家居', '时尚', '时政', '科技', '房产', '财经']
