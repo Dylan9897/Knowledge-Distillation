@@ -72,26 +72,26 @@ def train(model,train_data_loader,valid_data_loader,test_data_loader,config):
             scheduler.step()
             optimizer.zero_grad()
             total_steps += 1
-            if total_steps % 100 == 0:
-                train_acc = correct_predictions.double()/config.train_examples
-                train_loss = np.mean(losses)
-                val_acc, val_loss = eval_model(
-                                model,
-                                valid_data_loader,
-                                loss_fn,
-                                config.device,
-                                config.valid_examples
-                )
-                print("epoch:{},total step:{},Train loss is {},Train acc is {},valid loss is {},valid acc is {}".format(epoch,total_steps,train_loss,train_acc,val_loss,val_acc))
-                # print(f'Train loss {train_loss} accuracy {train_acc}')
-                # print(f'Val   loss {val_loss} accuracy {val_acc}')
-                history['train_acc'].append(train_acc)
-                history['train_loss'].append(train_loss)
-                history['val_acc'].append(val_acc)
-                history['val_loss'].append(val_loss)
-                if val_acc > best_accuracy:
-                    torch.save(model.state_dict(), os.path.join(config.MODEL_DIR,'best_model_state.ckpt'))
-                    best_accuracy = val_acc
+
+        train_acc = correct_predictions.double()/config.train_examples
+        train_loss = np.mean(losses)
+        val_acc, val_loss = eval_model(
+                        model,
+                        valid_data_loader,
+                        loss_fn,
+                        config.device,
+                        config.valid_examples
+        )
+        print("epoch:{},total step:{},Train loss is {},Train acc is {},valid loss is {},valid acc is {}".format(epoch,total_steps,train_loss,train_acc,val_loss,val_acc))
+        # print(f'Train loss {train_loss} accuracy {train_acc}')
+        # print(f'Val   loss {val_loss} accuracy {val_acc}')
+        history['train_acc'].append(train_acc)
+        history['train_loss'].append(train_loss)
+        history['val_acc'].append(val_acc)
+        history['val_loss'].append(val_loss)
+        if val_acc > best_accuracy:
+            torch.save(model.state_dict(), os.path.join(config.MODEL_DIR,'best_model_state.ckpt'))
+            best_accuracy = val_acc
     test_acc, _ = eval_model(model,test_data_loader,loss_fn,device,config.test_examples)
     print(f"test result is {test_acc.item()}")
     y_texts, y_pred, y_pred_probs, y_test = get_predictions(model,test_data_loader)
